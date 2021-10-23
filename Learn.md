@@ -186,7 +186,8 @@ contract Gas {
 
 ## if / else
 
-Solidity support conditional statements `if`, `else if` and `else`.
+Solidity support conditional statements `if`, `else if` and `else`.  
+It also supports a ternary operator.
 
 ```
 // SPDX-License-Identifier: MIT
