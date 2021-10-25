@@ -396,6 +396,11 @@ Solidity supports enumerables and they are useful to model choice and keep track
 
 Enums can be declared outside of a contract.
 
+Enums bounds a variable to have one of only a few predefined values.  
+This reduces the number of bugs in your code.  
+
+In this below example, Status enum is defined to have only five statuses.
+
 
 ```
 // SPDX-License-Identifier: MIT
@@ -481,6 +486,8 @@ They are useful for grouping together related data.
 
 Structs can be declared outside of a contract and imported in another contract.
 
+In the example below, we declare a Todo struct using `struct` keyword with two attributes text and completed.
+
 ```
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.3;
@@ -560,11 +567,24 @@ contract Todos {
 ```
 
 ## Data Locations - Storage, Memory and Calldata
+
+The amount of gas you will use during a transaction depends on the data location you use in your smart contract. 
+Hence, using appropriate location matters for having an optimized code that uses a minimum amount of gas.
+
 Variables are declared as either `storage`, `memory` or `calldata` to explicitly specify the location of the data.
 
-- `storage` - variable is a state variable (store on blockchain)
-- `memory` - variable is in memory and it exists while a function is being called
-- `calldata` - special data location that contains function arguments, only available for `external` functions
+- `storage` 
+    - variable is a state variable i.e. stored on blockchain
+    - it is permanent, persistant data and can be accessed into all functions within the contract
+    - it is quite expensive compared to other data locations
+- `memory` 
+    - variable is in memory and it exists while a function is being called
+    - it is temporary data and cheaper than the storage location
+    - think of it as a RAM of each individual function
+- `calldata` 
+    - special data location that contains function arguments, only available for `external` functions
+    - it is non-modifiable and non-persistant data location
+
 
 ```
 // SPDX-License-Identifier: MIT
@@ -611,6 +631,8 @@ contract DataLocations {
 There are several ways to return outputs from a function.
 
 Public functions cannot accept certain data types as inputs or outputs
+
+Unlike other languages, solidity supports returning multiple return values from a function.
 
 ```
 // SPDX-License-Identifier: MIT
@@ -818,13 +840,17 @@ Here is another example
 
 ## Function Modifier
 
-Modifiers are code that can be run before and / or after a function call.
+Modifiers are code that can be run before and / or after a function call.  
+They are used to modify the behaviour of a function.
 
 Modifiers can be used to:
 
 - Restrict access
 - Validate inputs
 - Guard against reentrancy hack
+
+The function body is inserted where the special symbol `_;` appears in the modifier definition.  
+So if the condition of modifier is satisfied while calling this function, the function is executed and otherwise, an exception is thrown.
 
 ```
     // SPDX-License-Identifier: MIT
@@ -885,10 +911,13 @@ Modifiers can be used to:
 ```
     
 ## Events
+`Event` is an inheritable member of a contract.  
 `Events` allow logging to the Ethereum blockchain. Some use cases for events are:
 
 - Listening for events and updating user interface
 - A cheap form of storage
+
+An event generated is not accessible from within contracts, not even the one which created and emitted them.
 
 ```
 // SPDX-License-Identifier: MIT
@@ -911,6 +940,12 @@ contract Event {
 
 ## Constructor
 A `constructor` is an optional function that is executed upon contract creation.
+
+
+Some characteristics of a constructor:
+- A contract can have only one constructor.
+- It is used to initialize state variables of a contract.
+- A constructor can be either public or internal.
 
 Here are examples of how to pass arguments to `constructors`.
 
@@ -1312,6 +1347,8 @@ Interface
 
 Functions and addresses declared `payable` can receive `ether` into the contract.
 
+`msg.value` varaible can be used to access the amount of ether sent to a `payable` function.
+
 ```
     // SPDX-License-Identifier: MIT
     pragma solidity ^0.8.3;
@@ -1534,7 +1571,7 @@ However it is not the recommend way to call existing functions.
 
 `delegatecall` is a low level function similar to `call`.
 
-When contract `A` executes `delegatecall` to contract `B`, `B`'s code is excuted
+When contract `A` executes `delegatecall` to contract `B`, `B`'s code is executed
 
 with contract `A`'s storage, `msg.sender` and `msg.value`.
 
@@ -1785,8 +1822,8 @@ You can import local and external files in Solidity.
 
 Here is our folder structure.
 
-    |--- Import.sol
-    |└── Foo.sol
+    └-- Import.sol
+    └── Foo.sol
     
 
 Foo.sol
