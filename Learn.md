@@ -1347,7 +1347,7 @@ Interface
 
 Functions and addresses declared `payable` can receive `ether` into the contract.
 
-`msg.value` varaible can be used to access the amount of ether sent to a `payable` function.
+`msg.value` variable can be used to access the amount of ether sent to a `payable` function.
 
 ```
     // SPDX-License-Identifier: MIT
@@ -1822,7 +1822,7 @@ You can import local and external files in Solidity.
 
 Here is our folder structure.
 
-    └-- Import.sol
+    └── Import.sol
     └── Foo.sol
     
 
@@ -1990,23 +1990,24 @@ Some use cases are:
 
 Messages can be signed off chain and then verified on chain using a smart contract.
 
+### Signature Verification:
+
+#### How to Sign and Verify
+
+Signing:
+1. Create message to sign
+2. Hash the message
+3. Sign the hash (off chain, keep your private key secret)
+
+Verify:
+1. Recreate hash from the original message
+2. Recover signer from signature and hash
+3. Compare recovered signer to claimed signer
+
+
 ```
     // SPDX-License-Identifier: MIT
     pragma solidity ^0.8.3;
-    
-    /* Signature Verification
-    
-    How to Sign and Verify
-    # Signing
-    1. Create message to sign
-    2. Hash the message
-    3. Sign the hash (off chain, keep your private key secret)
-    
-    # Verify
-    1. Recreate hash from the original message
-    2. Recover signer from signature and hash
-    3. Compare recovered signer to claimed signer
-    */
     
     contract VerifySignature {
         /* 1. Unlock MetaMask account
