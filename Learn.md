@@ -1,25 +1,28 @@
 # Solidity by example
+
 This quest is based on the examples see in the popular repository [solidity-by-example.org](https://solidity-by-example.org)
 
-In this quest we're going to write code in simple increments and understand the basics of the Solidity programming language and its syntax. 
+In this quest we're going to write code in simple increments and understand the basics of the Solidity programming language and its syntax.
 
-This quest assumes that you are aware of _what is Ethereum_ and are looking to build dapps. Solidity is the language in which you write decentralized apps (aka dapps). 
+This quest assumes that you are aware of _what is Ethereum_ and are looking to build dapps. Solidity is the language in which you write decentralized apps (aka dapps).
 
 This Quest is best suited for those who like to learn the syntax before the concepts.
 
 ## Hello world
+
 Write this code and run the test cases. Let's get a quick grasp of the programming language and syntax.
+
 ```
 // SPDX-License-Identifier: MIT
 // compiler version must be greater than or equal to 0.8.3 and less than 0.9.0
 pragma solidity ^0.8.3;
 
-contract SolidityByExample {
+contract HelloWorld {
     string public greet = "Hello World!";
 }
 ```
 
-- `pragma` defines which version of the compiler to use to compile this program (aka smart contract). Solidity language is rapidly improving and using the correct compiler version is important to avoid code incompatibility. 
+- `pragma` defines which version of the compiler to use to compile this program (aka smart contract). Solidity language is rapidly improving and using the correct compiler version is important to avoid code incompatibility.
 - Like a class, we use `contract` in solidity
 - Solidity is a typed language, `string` is a primitive data type.
 
@@ -28,8 +31,14 @@ run testcases 01.sh
 ```
 
 ## First Application
+
 We'll create an application to increment or decrement a simple counter and see it's value.
+
 ```
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.3;
+
+contract Counter {
     uint public count;
 
     // Function to get the current count
@@ -46,18 +55,74 @@ We'll create an application to increment or decrement a simple counter and see i
     function dec() public {
         count -= 1;
     }
+}
 ```
 
 - `uint` is a primitive datatype for unsigned integers. This is a 256 bit number. The largest number it can store is `2^256 - 1`
 - `count` is not initialized. But every variable is default initialized with a default value for that variable. In this case, it'd be `0`.
-- `function inc() public` represents a function that is public and can be called from outside the contract - by other contracts or by users. 
+- `function inc() public` represents a function that is public and can be called from outside the contract - by other contracts or by users.
 - `function get() public view returns (uint)` when returning, you must specify the return type under `returns`. If the function doesn't make any modification to any variables in the contract, you can add another modifier called `view`. Notice `inc()` and `dec()` update the variable inside their function body - hence don't have the `view` modifier
 
 ```
   run testcases 02.sh
 ```
 
+## Primitive Data Types
+
+Here we introduce you to some primitive data types available in Solidity.
+
+* `bool` - Boolean type. It can have true/false values
+* `uint` - Unsigned integers
+* `int` - signed integers
+* `address` - address holds the 20 byte value representing the size of an Ethereum address
+
+```
+    // SPDX-License-Identifier: MIT
+    pragma solidity ^0.8.3;
+    
+    contract Primitives {
+        bool public boo = true;
+    
+        /*
+        uint stands for unsigned integer, meaning non negative integers
+        different sizes are available
+            uint8   ranges from 0 to 2 ** 8 - 1
+            uint16  ranges from 0 to 2 ** 16 - 1
+            ...
+            uint256 ranges from 0 to 2 ** 256 - 1
+        */
+        uint8 public u8 = 1;
+        uint public u256 = 456;
+        uint public u = 123; // uint is an alias for uint256
+    
+        /*
+        Negative numbers are allowed for int types.
+        Like uint, different ranges are available from int8 to int256
+        
+        int256 ranges from -2 ** 255 to 2 ** 255 - 1
+        int128 ranges from -2 ** 127 to 2 ** 127 - 1
+        */
+        int8 public i8 = -1;
+        int public i256 = 456;
+        int public i = -123; // int is same as int256
+    
+        // minimum and maximum of int
+        int public minInt = type(int).min;
+        int public maxInt = type(int).max;
+    
+        address public addr = 0xCA35b7d915458EF540aDe6068dFe2F44E8fa733c;
+    
+        // Default values
+        // Unassigned variables have a default value
+        bool public defaultBoo; // false
+        uint public defaultUint; // 0
+        int public defaultInt; // 0
+        address public defaultAddr; // 0x0000000000000000000000000000000000000000
+    }
+```
+
 ## Variables
+
 ```
 contract Variables {
     // State variables are stored on the blockchain.
@@ -76,23 +141,68 @@ contract Variables {
 ```
 
 There are 3 types of variables in Solidity
+
 ### local
+
 - declared inside a function
 - not stored on the blockchain
-- if modificaitions are made only to the local variables, the function can be modified to `view`. 
+- if modificaitions are made only to the local variables, the function can be modified to `view`.
+
 ### state
+
 - declared outside a function
 - stored on the blockchain database
 - once a state variable is changed, the change will persist. The new updated value will be available to future calls.
-### global 
+
+### global
+
 - provides information about the blockchain
-- These are populated by Ethereum for every function call. `block` and `msg` are some popular global variables. `block` represents information about the block (as in "block"chain) in which this transaction will be present. Every functioncall is a transaction and it must be present in a block to be considered as _executed_. `msg` is the object that is populated by Ethereum with information about the user calling a function. `msg.sender` is the user's address who called the function. `msg.value` is how much money was sent to this function - functions on Ethereum can accept money too in ETH. 
+- These are populated by Ethereum for every function call. `block` and `msg` are some popular global variables. `block` represents information about the block (as in "block"chain) in which this transaction will be present. Every functioncall is a transaction and it must be present in a block to be considered as _executed_. `msg` is the object that is populated by Ethereum with information about the user calling a function. `msg.sender` is the user's address who called the function. `msg.value` is how much money was sent to this function - functions on Ethereum can accept money too in ETH.
 
 ```
 run testcases 03.sh
 ```
 
+## Constants
+
+Constants are variables that cannot be modified.
+
+Their value is hard coded and using constants can save gas cost.
+
+```
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.3;
+
+contract Constants {
+    // coding convention to uppercase constant variables
+    address public constant MY_ADDRESS = 0x777788889999AaAAbBbbCcccddDdeeeEfFFfCcCc;
+    uint public constant MY_UINT = 123;
+}
+```
+
+## Immutable
+Immutable variables are like constants. Values of immutable variables can be set inside the constructor but cannot be modified afterwards.
+
+Helpful for setting constant variables at time of deployment and not hardcoding like in case of `constant`.
+
+```
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.3;
+
+contract Immutable {
+    // coding convention to uppercase constant variables
+    address public immutable MY_ADDRESS;
+    uint public immutable MY_UINT;
+
+    constructor(uint _myUint) {
+        MY_ADDRESS = msg.sender;
+        MY_UINT = _myUint;
+    }
+}
+```
+
 ## Reading and writing a State Variable
+
 ```
 contract SimpleStorage {
     // State variable to store a number
@@ -109,8 +219,9 @@ contract SimpleStorage {
     }
 }
 ```
-We saw earlier saw that each function call is a new transaction. Every transaction has a transaction fees. 
-To write or update a state variable you need to send a transaction & pay the fees. 
+
+We saw earlier saw that each function call is a new transaction. Every transaction has a transaction fees.
+To write or update a state variable you need to send a transaction & pay the fees.
 
 On the other hand, you can read state variables, for free, without any transaction fee.
 
@@ -119,6 +230,7 @@ run testcases 04.sh
 ```
 
 ## Ether and Wei
+
 ```
 contract EtherUnits {
     uint public oneWei = 1 wei;
@@ -131,14 +243,14 @@ contract EtherUnits {
 }
 ```
 
-Transactions' transaction fees  are paid with ether.
+Transactions' transaction fees are paid with ether.
 
 Similar to how one dollar is equal to 100 cent, one ether is equal to 10^18 wei.
 
 Solidity has denomination modifiers for `uint`s `wei` and `ether`.
-if you define `uint oneEther = 1 ether`, value of `oneEther` will be translated internally to `10^18`. 
+if you define `uint oneEther = 1 ether`, value of `oneEther` will be translated internally to `10^18`.
 
-All transaction fees and payments on ethereum happen in the smallest denomination that is a wei. it is not possible to have a smaller denomination than `1 wei`. you can't have `0.1 wei`. 
+All transaction fees and payments on ethereum happen in the smallest denomination that is a wei. it is not possible to have a smaller denomination than `1 wei`. you can't have `0.1 wei`.
 
 ```
 run testcases 05.sh
@@ -146,14 +258,14 @@ run testcases 05.sh
 
 ## Gas
 
-*How much ether do you need to pay for a transaction?*
-You pay gas spent * gas price amount of ether, where
+_How much ether do you need to pay for a transaction?_
+You pay gas spent \* gas price amount of ether, where
 
 `gas` is a unit of computation
 `gas` spent is the total amount of `gas` used in a transaction
 `gas price` is how much ether you are willing to pay per gas
 
-Transactions (or function calls) are said to have executed only 
+Transactions (or function calls) are said to have executed only
 Transactions with higher gas price have higher priority to be included in a block.
 
 Unspent gas will be refunded.
@@ -217,6 +329,7 @@ contract IfElse {
 ```
 
 ## for and while loop
+
 Solidity supports `for`, `while`, and `do while` loops.
 
 Don't write loops that are unbounded as this can hit the gas limit, causing your transaction to fail.
@@ -251,6 +364,7 @@ contract Loop {
 ```
 
 ## Mapping
+
 Maps are created with the syntax `mapping(keyType => valueType)`.
 
 `keyType` can be value types such as `uint`, `address` or `bytes`.
@@ -258,7 +372,6 @@ Maps are created with the syntax `mapping(keyType => valueType)`.
 `valueType` can be any type including another mapping or an array.
 
 Mappings are not iterable.
-
 
 ```
 // SPDX-License-Identifier: MIT
@@ -308,7 +421,6 @@ contract NestedMapping {
     }
 }
 ```
-
 
 ## Array
 
@@ -389,7 +501,6 @@ contract CompactArray {
 }
 ```
 
-
 ## Enum
 
 Solidity supports enumerables and they are useful to model choice and keep track of state.
@@ -397,10 +508,9 @@ Solidity supports enumerables and they are useful to model choice and keep track
 Enums can be declared outside of a contract.
 
 Enums bounds a variable to have one of only a few predefined values.  
-This reduces the number of bugs in your code.  
+This reduces the number of bugs in your code.
 
 In this below example, Status enum is defined to have only five statuses.
-
 
 ```
 // SPDX-License-Identifier: MIT
@@ -466,7 +576,6 @@ enum Status {
 
 File that imports the enum above
 
-
 ```
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.3;
@@ -478,8 +587,8 @@ contract Enum {
 }
 ```
 
-
 ## Structs
+
 You can define your own type by creating a `struct`.
 
 They are useful for grouping together related data.
@@ -539,8 +648,8 @@ contract Todos {
 ```
 
 ### Declaring and importing Struct
-File that the struct is declared in
 
+File that the struct is declared in
 
 ```
 // SPDX-License-Identifier: MIT
@@ -551,8 +660,8 @@ struct Todo {
     bool completed;
 }
 ```
-File that imports the struct above
 
+File that imports the struct above
 
 ```
 // SPDX-License-Identifier: MIT
@@ -568,23 +677,22 @@ contract Todos {
 
 ## Data Locations - Storage, Memory and Calldata
 
-The amount of gas you will use during a transaction depends on the data location you use in your smart contract. 
+The amount of gas you will use during a transaction depends on the data location you use in your smart contract.
 Hence, using appropriate location matters for having an optimized code that uses a minimum amount of gas.
 
 Variables are declared as either `storage`, `memory` or `calldata` to explicitly specify the location of the data.
 
-- `storage` 
-    - variable is a state variable i.e. stored on blockchain
-    - it is permanent, persistant data and can be accessed into all functions within the contract
-    - it is quite expensive compared to other data locations
-- `memory` 
-    - variable is in memory and it exists while a function is being called
-    - it is temporary data and cheaper than the storage location
-    - think of it as a RAM of each individual function
-- `calldata` 
-    - special data location that contains function arguments, only available for `external` functions
-    - it is non-modifiable and non-persistant data location
-
+- `storage`
+  - variable is a state variable i.e. stored on blockchain
+  - it is permanent, persistant data and can be accessed into all functions within the contract
+  - it is quite expensive compared to other data locations
+- `memory`
+  - variable is in memory and it exists while a function is being called
+  - it is temporary data and cheaper than the storage location
+  - think of it as a RAM of each individual function
+- `calldata`
+  - special data location that contains function arguments, only available for `external` functions
+  - it is non-modifiable and non-persistant data location
 
 ```
 // SPDX-License-Identifier: MIT
@@ -628,6 +736,7 @@ contract DataLocations {
 ```
 
 ## Function
+
 There are several ways to return outputs from a function.
 
 Public functions cannot accept certain data types as inputs or outputs
@@ -727,15 +836,15 @@ Getter functions can be declared `view` or `pure`.
 ```
     // SPDX-License-Identifier: MIT
     pragma solidity ^0.8.3;
-    
+
     contract ViewAndPure {
         uint public x = 1;
-    
+
         // Promise not to modify the state.
         function addToX(uint y) public view returns (uint) {
             return x + y;
         }
-    
+
         // Promise not to modify or read from the state.
         function add(uint i, uint j) public pure returns (uint) {
             return i + j;
@@ -758,7 +867,7 @@ Use custom error to save gas.
 ```
     // SPDX-License-Identifier: MIT
     pragma solidity ^0.8.3;
-    
+
     contract Error {
         function testRequire(uint _i) public pure {
             // Require should be used to validate conditions such as:
@@ -767,7 +876,7 @@ Use custom error to save gas.
             // - return values from calls to other functions
             require(_i > 10, "Input must be greater than 10");
         }
-    
+
         function testRevert(uint _i) public pure {
             // Revert is useful when the condition to check is complex.
             // This code does the exact same thing as the example above
@@ -775,21 +884,21 @@ Use custom error to save gas.
                 revert("Input must be greater than 10");
             }
         }
-    
+
         uint public num;
-    
+
         function testAssert() public view {
             // Assert should only be used to test for internal errors,
             // and to check invariants.
-    
+
             // Here we assert that num is always equal to 0
             // since it is impossible to update the value of num
             assert(num == 0);
         }
-    
+
         // custom error
         error InsufficientBalance(uint balance, uint withdrawAmount);
-    
+
         function testCustomError(uint _withdrawAmount) public view {
             uint bal = address(this).balance;
             if (bal < _withdrawAmount) {
@@ -804,35 +913,35 @@ Here is another example
 ```
     // SPDX-License-Identifier: MIT
     pragma solidity ^0.8.3;
-    
+
     contract Account {
         uint public balance;
         uint public constant MAX_UINT = 2**256 - 1;
-    
+
         function deposit(uint _amount) public {
             uint oldBalance = balance;
             uint newBalance = balance + _amount;
-    
+
             // balance + _amount does not overflow if balance + _amount >= balance
             require(newBalance >= oldBalance, "Overflow");
-    
+
             balance = newBalance;
-    
+
             assert(balance >= oldBalance);
         }
-    
+
         function withdraw(uint _amount) public {
             uint oldBalance = balance;
-    
+
             // balance - _amount does not underflow if balance >= _amount
             require(balance >= _amount, "Underflow");
-    
+
             if (balance < _amount) {
                 revert("Underflow");
             }
-    
+
             balance -= _amount;
-    
+
             assert(balance <= oldBalance);
         }
     }
@@ -855,19 +964,19 @@ So if the condition of modifier is satisfied while calling this function, the fu
 ```
     // SPDX-License-Identifier: MIT
     pragma solidity ^0.8.3;
-    
+
     contract FunctionModifier {
         // We will use these variables to demonstrate how to use
         // modifiers.
         address public owner;
         uint public x = 10;
         bool public locked;
-    
+
         constructor() {
             // Set the transaction sender as the owner of the contract.
             owner = msg.sender;
         }
-    
+
         // Modifier to check that the caller is the owner of
         // the contract.
         modifier onlyOwner() {
@@ -877,40 +986,41 @@ So if the condition of modifier is satisfied while calling this function, the fu
             // execute the rest of the code.
             _;
         }
-    
+
         // Modifiers can take inputs. This modifier checks that the
         // address passed in is not the zero address.
         modifier validAddress(address _addr) {
             require(_addr != address(0), "Not valid address");
             _;
         }
-    
+
         function changeOwner(address _newOwner) public onlyOwner validAddress(_newOwner) {
             owner = _newOwner;
         }
-    
+
         // Modifiers can be called before and / or after a function.
         // This modifier prevents a function from being called while
         // it is still executing.
         modifier noReentrancy() {
             require(!locked, "No reentrancy");
-    
+
             locked = true;
             _;
             locked = false;
         }
-    
+
         function decrement(uint i) public noReentrancy {
             x -= i;
-    
+
             if (i > 1) {
                 decrement(i - 1);
             }
         }
     }
 ```
-    
+
 ## Events
+
 `Event` is an inheritable member of a contract.  
 `Events` allow logging to the Ethereum blockchain. Some use cases for events are:
 
@@ -939,16 +1049,16 @@ contract Event {
 ```
 
 ## Constructor
+
 A `constructor` is an optional function that is executed upon contract creation.
 
-
 Some characteristics of a constructor:
+
 - A contract can have only one constructor.
 - It is used to initialize state variables of a contract.
 - A constructor can be either public or internal.
 
 Here are examples of how to pass arguments to `constructors`.
-
 
 ```
 // SPDX-License-Identifier: MIT
@@ -1007,6 +1117,7 @@ contract E is X, Y {
 ```
 
 ## Inheritance
+
 Solidity supports multiple inheritance. Contracts can inherit other contract by using the `is` keyword.
 
 Function that is going to be overridden by a child contract must be declared as `virtual`.
@@ -1082,10 +1193,10 @@ contract F is A, B {
 ```
 
 ## Shadowing Inherited State Variables
+
 Unlike functions, state variables cannot be overridden by re-declaring it in the child contract.
 
 Let's learn how to correctly override inherited state variables.
-
 
 ```
 // SPDX-License-Identifier: MIT
@@ -1116,6 +1227,7 @@ contract C is A {
 ```
 
 ## Calling Parent Contracts
+
 Parent contracts can be called directly, or by using the keyword `super`.
 
 By using the keyword `super`, all of the immediate parent contracts will be called.
@@ -1195,17 +1307,17 @@ Functions and state variables have to declare whether they are accessible by oth
 
 Functions can be declared as
 
-*   `public` - any contract and account can call
-*   `private` - only inside the contract that defines the function
-*   `internal` - only inside contract that inherits an `internal` function
-*   `external` - only other contracts and accounts can call
+- `public` - any contract and account can call
+- `private` - only inside the contract that defines the function
+- `internal` - only inside contract that inherits an `internal` function
+- `external` - only other contracts and accounts can call
 
 State variables can be declared as `public`, `private`, or `internal` but not `external`.
 
 ```
     // SPDX-License-Identifier: MIT
     pragma solidity ^0.8.3;
-    
+
     contract Base {
         // Private function can only be called
         // - inside this contract
@@ -1213,22 +1325,22 @@ State variables can be declared as `public`, `private`, or `internal` but not `e
         function privateFunc() private pure returns (string memory) {
             return "private function called";
         }
-    
+
         function testPrivateFunc() public pure returns (string memory) {
             return privateFunc();
         }
-    
+
         // Internal function can be called
         // - inside this contract
         // - inside contracts that inherit this contract
         function internalFunc() internal pure returns (string memory) {
             return "internal function called";
         }
-    
+
         function testInternalFunc() public pure virtual returns (string memory) {
             return internalFunc();
         }
-    
+
         // Public functions can be called
         // - inside this contract
         // - inside contracts that inherit this contract
@@ -1236,19 +1348,19 @@ State variables can be declared as `public`, `private`, or `internal` but not `e
         function publicFunc() public pure returns (string memory) {
             return "public function called";
         }
-    
+
         // External functions can only be called
         // - by other contracts and accounts
         function externalFunc() external pure returns (string memory) {
             return "external function called";
         }
-    
+
         // This function will not compile since we're trying to call
         // an external function here.
         // function testExternalFunc() public pure returns (string memory) {
         //     return externalFunc();
         // }
-    
+
         // State variables
         string private privateVar = "my private variable";
         string internal internalVar = "my internal variable";
@@ -1256,61 +1368,61 @@ State variables can be declared as `public`, `private`, or `internal` but not `e
         // State variables cannot be external so this code won't compile.
         // string external externalVar = "my external variable";
     }
-    
+
     contract Child is Base {
         // Inherited contracts do not have access to private functions
         // and state variables.
         // function testPrivateFunc() public pure returns (string memory) {
         //     return privateFunc();
         // }
-    
+
         // Internal function call be called inside child contracts.
         function testInternalFunc() public pure override returns (string memory) {
             return internalFunc();
         }
     }
 ```
-  
+
 ## Interface
 
 You can interact with other contracts by declaring an `Interface`.
 
 Interface
 
-*   cannot have any functions implemented
-*   can inherit from other interfaces
-*   all declared functions must be external
-*   cannot declare a constructor
-*   cannot declare state variables
+- cannot have any functions implemented
+- can inherit from other interfaces
+- all declared functions must be external
+- cannot declare a constructor
+- cannot declare state variables
 
 ```
     // SPDX-License-Identifier: MIT
     pragma solidity ^0.8.3;
-    
+
     contract Counter {
         uint public count;
-    
+
         function increment() external {
             count += 1;
         }
     }
-    
+
     interface ICounter {
         function count() external view returns (uint);
-    
+
         function increment() external;
     }
-    
+
     contract MyContract {
         function incrementCounter(address _counter) external {
             ICounter(_counter).increment();
         }
-    
+
         function getCount(address _counter) external view returns (uint) {
             return ICounter(_counter).count();
         }
     }
-    
+
     // Uniswap example
     interface UniswapV2Factory {
         function getPair(address tokenA, address tokenB)
@@ -1318,7 +1430,7 @@ Interface
             view
             returns (address pair);
     }
-    
+
     interface UniswapV2Pair {
         function getReserves()
             external
@@ -1329,12 +1441,12 @@ Interface
                 uint32 blockTimestampLast
             );
     }
-    
+
     contract UniswapExample {
         address private factory = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
         address private dai = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
         address private weth = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
-    
+
         function getTokenReserves() external view returns (uint, uint) {
             address pair = UniswapV2Factory(factory).getPair(dai, weth);
             (uint reserve0, uint reserve1, ) = UniswapV2Pair(pair).getReserves();
@@ -1342,7 +1454,7 @@ Interface
         }
     }
 ```
-  
+
 ## Payable
 
 Functions and addresses declared `payable` can receive `ether` into the contract.
@@ -1352,36 +1464,36 @@ Functions and addresses declared `payable` can receive `ether` into the contract
 ```
     // SPDX-License-Identifier: MIT
     pragma solidity ^0.8.3;
-    
+
     contract Payable {
         // Payable address can receive Ether
         address payable public owner;
-    
+
         // Payable constructor can receive Ether
         constructor() payable {
             owner = payable(msg.sender);
         }
-    
+
         // Function to deposit Ether into this contract.
         // Call this function along with some Ether.
         // The balance of this contract will be automatically updated.
         function deposit() public payable {}
-    
+
         // Call this function along with some Ether.
         // The function will throw an error since this function is not payable.
         function notPayable() public {}
-    
+
         // Function to withdraw all Ether from this contract.
         function withdraw() public {
             // get the amount of Ether stored in this contract
             uint amount = address(this).balance;
-    
+
             // send all Ether to owner
             // Owner can receive Ether since the address of owner is payable
             (bool success, ) = owner.call{value: amount}("");
             require(success, "Failed to send Ether");
         }
-    
+
         // Function to transfer Ether from this contract to address from input
         function transfer(address payable _to, uint _amount) public {
             // Note that "to" is declared as payable
@@ -1390,23 +1502,23 @@ Functions and addresses declared `payable` can receive `ether` into the contract
         }
     }
 ```
-    
+
 ## Sending Ether (transfer, send, call)
 
 ### How to send Ether?
 
 You can send Ether to other contracts by
 
-*   `transfer` (2300 gas, throws error)
-*   `send` (2300 gas, returns bool)
-*   `call` (forward all gas or set gas, returns bool)
+- `transfer` (2300 gas, throws error)
+- `send` (2300 gas, returns bool)
+- `call` (forward all gas or set gas, returns bool)
 
 ### How to receive Ether?
 
 A contract receiving Ether must have at least one of the functions below
 
-*   `receive() external payable`
-*   `fallback() external payable`
+- `receive() external payable`
+- `fallback() external payable`
 
 `receive()` is called if `msg.data` is empty, otherwise `fallback()` is called.
 
@@ -1416,17 +1528,17 @@ A contract receiving Ether must have at least one of the functions below
 
 Guard against re-entrancy by
 
-*   making all state changes before calling other contracts
-*   using re-entrancy guard modifier
+- making all state changes before calling other contracts
+- using re-entrancy guard modifier
 
 ```
     // SPDX-License-Identifier: MIT
     pragma solidity ^0.8.3;
-    
+
     contract ReceiveEther {
         /*
         Which function is called, fallback() or receive()?
-    
+
                send Ether
                    |
              msg.data is empty?
@@ -1439,31 +1551,31 @@ Guard against re-entrancy by
             /      \
         receive()   fallback()
         */
-    
+
         // Function to receive Ether. msg.data must be empty
         receive() external payable {}
-    
+
         // Fallback function is called when msg.data is not empty
         fallback() external payable {}
-    
+
         function getBalance() public view returns (uint) {
             return address(this).balance;
         }
     }
-    
+
     contract SendEther {
         function sendViaTransfer(address payable _to) public payable {
             // This function is no longer recommended for sending Ether.
             _to.transfer(msg.value);
         }
-    
+
         function sendViaSend(address payable _to) public payable {
             // Send returns a boolean value indicating success or failure.
             // This function is not recommended for sending Ether.
             bool sent = _to.send(msg.value);
             require(sent, "Failed to send Ether");
         }
-    
+
         function sendViaCall(address payable _to) public payable {
             // Call returns a boolean value indicating success or failure.
             // This is the current recommended method to use.
@@ -1472,43 +1584,43 @@ Guard against re-entrancy by
         }
     }
 ```
-  
+
 ## Fallback
 
 `fallback` is a function that does not take any arguments and does not return anything.
 
 It is executed either when
 
-*   a function that does not exist is called or
-*   Ether is sent directly to a contract but `receive()` does not exist or `msg.data` is not empty
+- a function that does not exist is called or
+- Ether is sent directly to a contract but `receive()` does not exist or `msg.data` is not empty
 
 `fallback` has a 2300 gas limit when called by `transfer` or `send`.
 
 ```
     // SPDX-License-Identifier: MIT
     pragma solidity ^0.8.3;
-    
+
     contract Fallback {
         event Log(uint gas);
-    
+
         // Fallback function must be declared as external.
         fallback() external payable {
             // send / transfer (forwards 2300 gas to this fallback function)
             // call (forwards all of the gas)
             emit Log(gasleft());
         }
-    
+
         // Helper function to check the balance of this contract
         function getBalance() public view returns (uint) {
             return address(this).balance;
         }
     }
-    
+
     contract SendToFallback {
         function transferToFallback(address payable _to) public payable {
             _to.transfer(msg.value);
         }
-    
+
         function callFallback(address payable _to) public payable {
             (bool sent, ) = _to.call{value: msg.value}("");
             require(sent, "Failed to send Ether");
@@ -1527,24 +1639,24 @@ However it is not the recommend way to call existing functions.
 ```
     // SPDX-License-Identifier: MIT
     pragma solidity ^0.8.3;
-    
+
     contract Receiver {
         event Received(address caller, uint amount, string message);
-    
+
         fallback() external payable {
             emit Received(msg.sender, msg.value, "Fallback was called");
         }
-    
+
         function foo(string memory _message, uint _x) public payable returns (uint) {
             emit Received(msg.sender, msg.value, _message);
-    
+
             return _x + 1;
         }
     }
-    
+
     contract Caller {
         event Response(bool success, bytes data);
-    
+
         // Let's imagine that contract B does not have the source code for
         // contract A, but we do know the address of A and the function to call.
         function testCallFoo(address payable _addr) public payable {
@@ -1552,21 +1664,21 @@ However it is not the recommend way to call existing functions.
             (bool success, bytes memory data) = _addr.call{value: msg.value, gas: 5000}(
                 abi.encodeWithSignature("foo(string,uint256)", "call foo", 123)
             );
-    
+
             emit Response(success, data);
         }
-    
+
         // Calling a function that does not exist triggers the fallback function.
         function testCallDoesNotExist(address _addr) public {
             (bool success, bytes memory data) = _addr.call(
                 abi.encodeWithSignature("doesNotExist()")
             );
-    
+
             emit Response(success, data);
         }
     }
 ```
-    
+
 ## Delegatecall
 
 `delegatecall` is a low level function similar to `call`.
@@ -1578,26 +1690,26 @@ with contract `A`'s storage, `msg.sender` and `msg.value`.
 ```
     // SPDX-License-Identifier: MIT
     pragma solidity ^0.8.3;
-    
+
     // NOTE: Deploy this contract first
     contract B {
         // NOTE: storage layout must be the same as contract A
         uint public num;
         address public sender;
         uint public value;
-    
+
         function setVars(uint _num) public payable {
             num = _num;
             sender = msg.sender;
             value = msg.value;
         }
     }
-    
+
     contract A {
         uint public num;
         address public sender;
         uint public value;
-    
+
         function setVars(address _contract, uint _num) public payable {
             // A's storage is set, B is not modified.
             (bool success, bytes memory data) = _contract.delegatecall(
@@ -1628,7 +1740,7 @@ Here is how the function selector is computed.
 ```
     // SPDX-License-Identifier: MIT
     pragma solidity ^0.8.3;
-    
+
     contract FunctionSelector {
         /*
         "transfer(address,uint256)"
@@ -1655,40 +1767,40 @@ This method is not recommended.
 ```
     // SPDX-License-Identifier: MIT
     pragma solidity ^0.8.3;
-    
+
     contract Callee {
         uint public x;
         uint public value;
-    
+
         function setX(uint _x) public returns (uint) {
             x = _x;
             return x;
         }
-    
+
         function setXandSendEther(uint _x) public payable returns (uint, uint) {
             x = _x;
             value = msg.value;
-    
+
             return (x, value);
         }
     }
-    
+
     contract Caller {
         function setX(Callee _callee, uint _x) public {
             uint x = _callee.setX(_x);
         }
-    
+
         function setXFromAddress(address _addr, uint _x) public {
             Callee callee = Callee(_addr);
             callee.setX(_x);
         }
-    
+
         function setXandSendEther(Callee _callee, uint _x) public payable {
             (uint x, uint value) = _callee.setXandSendEther{value: msg.value}(_x);
         }
     }
 ```
-   
+
 ## Contract that Creates other Contracts
 
 Contracts can be created by other contracts using the `new` keyword. Since 0.8.0, `new` keyword supports `create2` feature by specifying `salt` options.
@@ -1696,42 +1808,42 @@ Contracts can be created by other contracts using the `new` keyword. Since 0.8.0
 ```
     // SPDX-License-Identifier: MIT
     pragma solidity ^0.8.3;
-    
+
     contract Car {
         address public owner;
         string public model;
         address public carAddr;
-    
+
         constructor(address _owner, string memory _model) payable {
             owner = _owner;
             model = _model;
             carAddr = address(this);
         }
     }
-    
+
     contract CarFactory {
         Car[] public cars;
-    
+
         function create(address _owner, string memory _model) public {
             Car car = new Car(_owner, _model);
             cars.push(car);
         }
-    
+
         function createAndSendEther(address _owner, string memory _model) public payable {
             Car car = (new Car){value: msg.value}(_owner, _model);
             cars.push(car);
         }
-    
+
         function create2(address _owner, string memory _model, bytes32 _salt) public {
             Car car = (new Car){salt: _salt}(_owner, _model);
             cars.push(car);
         }
-    
+
         function create2AndSendEther(address _owner, string memory _model, bytes32 _salt) public payable {
             Car car = (new Car){value: msg.value, salt: _salt}(_owner, _model);
             cars.push(car);
         }
-    
+
         function getCar(uint _index)
             public
             view
@@ -1743,12 +1855,12 @@ Contracts can be created by other contracts using the `new` keyword. Since 0.8.0
             )
         {
             Car car = cars[_index];
-    
+
             return (car.owner(), car.model(), car.carAddr(), address(car).balance);
         }
     }
 ```
-   
+
 ## Try Catch
 
 `try / catch` can only catch errors from external function calls and contract creation.
@@ -1756,34 +1868,34 @@ Contracts can be created by other contracts using the `new` keyword. Since 0.8.0
 ```
     // SPDX-License-Identifier: MIT
     pragma solidity ^0.8.3;
-    
+
     // External contract used for try / catch examples
     contract Foo {
         address public owner;
-    
+
         constructor(address _owner) {
             require(_owner != address(0), "invalid address");
             assert(_owner != 0x0000000000000000000000000000000000000001);
             owner = _owner;
         }
-    
+
         function myFunc(uint x) public pure returns (string memory) {
             require(x != 0, "require failed");
             return "my func was called";
         }
     }
-    
+
     contract Bar {
         event Log(string message);
         event LogBytes(bytes data);
-    
+
         Foo public foo;
-    
+
         constructor() {
             // This Foo contract is used for example of try catch with external call
             foo = new Foo(msg.sender);
         }
-    
+
         // Example of try / catch with external call
         // tryCatchExternalCall(0) => Log("external call failed")
         // tryCatchExternalCall(1) => Log("my func was called")
@@ -1794,7 +1906,7 @@ Contracts can be created by other contracts using the `new` keyword. Since 0.8.0
                 emit Log("external call failed");
             }
         }
-    
+
         // Example of try / catch with contract creation
         // tryCatchNewContract(0x0000000000000000000000000000000000000000) => Log("invalid address")
         // tryCatchNewContract(0x0000000000000000000000000000000000000001) => LogBytes("")
@@ -1824,14 +1936,13 @@ Here is our folder structure.
 
     └── Import.sol
     └── Foo.sol
-    
 
 Foo.sol
 
 ```
     // SPDX-License-Identifier: MIT
     pragma solidity ^0.8.3;
-    
+
     contract Foo {
         string public name = "Foo";
     }
@@ -1842,14 +1953,14 @@ Import.sol
 ```
     // SPDX-License-Identifier: MIT
     pragma solidity ^0.8.3;
-    
+
     // import Foo.sol from current directory
     import "./Foo.sol";
-    
+
     contract Import {
         // Initialize Foo.sol
         Foo public foo = new Foo();
-    
+
         // Test Foo.sol by getting it's name.
         function getFooName() public view returns (string memory) {
             return foo.name();
@@ -1868,16 +1979,16 @@ Otherwise the library must be deployed and then linked before the contract is de
 ```
     // SPDX-License-Identifier: MIT
     pragma solidity ^0.8.3;
-    
+
     library SafeMath {
         function add(uint x, uint y) internal pure returns (uint) {
             uint z = x + y;
             require(z >= x, "uint overflow");
-    
+
             return z;
         }
     }
-    
+
     library Math {
         function sqrt(uint y) internal pure returns (uint z) {
             if (y > 3) {
@@ -1893,21 +2004,21 @@ Otherwise the library must be deployed and then linked before the contract is de
             // else z = 0 (default value)
         }
     }
-    
+
     contract TestSafeMath {
         using SafeMath for uint;
-    
+
         uint public MAX_UINT = 2**256 - 1;
-    
+
         function testAdd(uint x, uint y) public pure returns (uint) {
             return x.add(y);
         }
-    
+
         function testSquareRoot(uint x) public pure returns (uint) {
             return Math.sqrt(x);
         }
     }
-    
+
     // Array function to delete element at index and re-organize the array
     // so that their are no gaps between the elements.
     library Array {
@@ -1918,19 +2029,19 @@ Otherwise the library must be deployed and then linked before the contract is de
             arr.pop();
         }
     }
-    
+
     contract TestArray {
         using Array for uint[];
-    
+
         uint[] public arr;
-    
+
         function testArrayRemove() public {
             for (uint i = 0; i < 3; i++) {
                 arr.push(i);
             }
-    
+
             arr.remove(1);
-    
+
             assert(arr.length == 2);
             assert(arr[0] == 0);
             assert(arr[1] == 2);
@@ -1944,14 +2055,14 @@ Otherwise the library must be deployed and then linked before the contract is de
 
 Some use cases are:
 
-*   Creating a deterministic unique ID from a input
-*   Commit-Reveal scheme
-*   Compact cryptographic signature (by signing the hash instead of a larger input)
+- Creating a deterministic unique ID from a input
+- Commit-Reveal scheme
+- Compact cryptographic signature (by signing the hash instead of a larger input)
 
 ```
     // SPDX-License-Identifier: MIT
     pragma solidity ^0.8.3;
-    
+
     contract HashFunction {
         function hash(
             string memory _text,
@@ -1960,7 +2071,7 @@ Some use cases are:
         ) public pure returns (bytes32) {
             return keccak256(abi.encodePacked(_text, _num, _addr));
         }
-    
+
         // Example of hash collision
         // Hash collision can occur when you pass more than one dynamic data type
         // to abi.encodePacked. In such case, you should use abi.encode instead.
@@ -1974,11 +2085,11 @@ Some use cases are:
             return keccak256(abi.encodePacked(_text, _anotherText));
         }
     }
-    
+
     contract GuessTheMagicWord {
         bytes32 public answer =
             0x60298f78cc0b47170ba79c10aa3851d7648bd96f2f8e46a19dbc777c36fb0c00;
-    
+
         // Magic word is "Solidity"
         function guess(string memory _word) public view returns (bool) {
             return keccak256(abi.encodePacked(_word)) == answer;
@@ -1995,25 +2106,26 @@ Messages can be signed off chain and then verified on chain using a smart contra
 #### How to Sign and Verify
 
 Signing:
+
 1. Create message to sign
 2. Hash the message
 3. Sign the hash (off chain, keep your private key secret)
 
 Verify:
+
 1. Recreate hash from the original message
 2. Recover signer from signature and hash
 3. Compare recovered signer to claimed signer
 
-
 ```
     // SPDX-License-Identifier: MIT
     pragma solidity ^0.8.3;
-    
+
     contract VerifySignature {
         /* 1. Unlock MetaMask account
         ethereum.enable()
         */
-    
+
         /* 2. Get message hash to sign
         getMessageHash(
             0x14723A09ACff6D2A60DcdF7aA4AFf308FDDC160C,
@@ -2021,7 +2133,7 @@ Verify:
             "coffee and donuts",
             1
         )
-    
+
         hash = "0xcf36ac4f97dc10d91fc2cbb20d718e94a8cbfe0f82eaedc6a4aa38946fb797cd"
         */
         function getMessageHash(
@@ -2032,15 +2144,15 @@ Verify:
         ) public pure returns (bytes32) {
             return keccak256(abi.encodePacked(_to, _amount, _message, _nonce));
         }
-    
+
         /* 3. Sign message hash
         # using browser
         account = "copy paste account of signer here"
         ethereum.request({ method: "personal_sign", params: [account, hash]}).then(console.log)
-    
+
         # using web3
         web3.personal.sign(hash, web3.eth.defaultAccount, console.log)
-    
+
         Signature will be different for different accounts
         0x993dab3dd91f5c6dc28e17439be475478f5635c92a56e17e82349d3fb2f166196f466c0b4e0c146f285204f0dcb13e5ae67bc33f4b888ec32dfe0a063e8f3f781b
         */
@@ -2058,7 +2170,7 @@ Verify:
                     abi.encodePacked("\x19Ethereum Signed Message:\n32", _messageHash)
                 );
         }
-    
+
         /* 4. Verify signature
         signer = 0xB273216C05A8c0D4F0a4Dd0d7Bae1D2EfFE636dd
         to = 0x14723A09ACff6D2A60DcdF7aA4AFf308FDDC160C
@@ -2078,20 +2190,20 @@ Verify:
         ) public pure returns (bool) {
             bytes32 messageHash = getMessageHash(_to, _amount, _message, _nonce);
             bytes32 ethSignedMessageHash = getEthSignedMessageHash(messageHash);
-    
+
             return recoverSigner(ethSignedMessageHash, signature) == _signer;
         }
-    
+
         function recoverSigner(bytes32 _ethSignedMessageHash, bytes memory _signature)
             public
             pure
             returns (address)
         {
             (bytes32 r, bytes32 s, uint8 v) = splitSignature(_signature);
-    
+
             return ecrecover(_ethSignedMessageHash, v, r, s);
         }
-    
+
         function splitSignature(bytes memory sig)
             public
             pure
@@ -2102,17 +2214,17 @@ Verify:
             )
         {
             require(sig.length == 65, "invalid signature length");
-    
+
             assembly {
                 /*
                 First 32 bytes stores the length of the signature
-    
+
                 add(sig, 32) = pointer of sig + 32
                 effectively, skips first 32 bytes of signature
-    
+
                 mload(p) loads next 32 bytes starting at the memory address p into memory
                 */
-    
+
                 // first 32 bytes, after the length prefix
                 r := mload(add(sig, 32))
                 // second 32 bytes
@@ -2120,9 +2232,8 @@ Verify:
                 // final byte (first byte of the next 32 bytes)
                 v := byte(0, mload(add(sig, 96)))
             }
-    
+
             // implicitly return (r, s, v)
         }
     }
 ```
-  

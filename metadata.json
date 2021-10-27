@@ -1,0 +1,36 @@
+{
+  "version": "1.0.0",
+  "defaultFile": "contracts/HelloWorld.sol",
+  "environment": "solidity",
+  "setupCommands": ["npm i", "npx hardhat compile"],
+  "compileCommand": "npx hardhat compile",
+  "tests": [
+    { "itShould": "Compile all contracts", "command": "sh learn_tests/01.sh" },
+    { "itShould": "Deploy HelloWorld to dummy blockchain", "command": "sh learn_tests/02.sh" },
+    { "itShould": "Output greet 'Hello World!'", "command": "sh learn_tests/03.sh" },
+    {
+      "itShould": "Deploy Counter to dummy blockchain",
+      "command": "sh learn_tests/04.sh"
+    },
+    { "itShould": "Call get() and output count value", "command": "sh learn_tests/05.sh" },
+    { "itShould": "Call inc() and output incremented count value", "command": "sh learn_tests/06.sh" },
+    { "itShould": "Call dec() and output decremented count value", "command": "sh learn_tests/07.sh" },
+    {
+      "itShould": "Deploy Primitives to dummy blockchain",
+      "command": "sh learn_tests/08.sh"
+    },
+    {
+      "itShould": "Deploy Variables to dummy blockchain",
+      "command": "sh learn_tests/09.sh"
+    },
+    {
+      "itShould": "Deploy Constants to dummy blockchain",
+      "command": "sh learn_tests/10.sh"
+    },
+    {
+      "itShould": "Deploy Immutable to dummy blockchain",
+      "command": "sh learn_tests/11.sh"
+    },
+  ],
+  "learnerAccessibleFileList": ["contracts/*"]
+}
