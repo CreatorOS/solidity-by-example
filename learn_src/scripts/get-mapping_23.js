@@ -15,20 +15,16 @@ async function main() {
   // await hre.run('compile');
 
   // We get the contract to deploy
-  const ContractFactory = await hre.ethers.getContractFactory('SimpleStorage');
+  const [deployer] = await ethers.getSigners();
+  const ContractFactory = await hre.ethers.getContractFactory('Mapping');
   const contract = await ContractFactory.deploy();
 
   await contract.deployed();
-  console.log('SimpleStorage Contract deployed to:', contract.address);
+  console.log('Mapping Contract deployed to:', contract.address);
   try {
-    console.log(`Calling get() before set()...`);
-    let num = await contract.get();
-    console.log('get() output before set: ', num.toString());
-    console.log(`\nCalling set(3)...`);
-    await contract.set(3);
-    console.log(`\nCalling get() after set(3)...`);
-    num = await contract.get();
-    console.log('get() output after set(3): ', num.toString());
+    console.log(`Calling get(${deployer.address})`);
+    let num = await contract.get(deployer.address);
+    console.log(`get(${deployer.address}) output(should get default value 0) :`, num.toString());
   } catch (e) {
     console.error(e);
     process.exit(1);

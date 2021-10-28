@@ -397,6 +397,11 @@ contract Mapping {
         delete myMap[_addr];
     }
 }
+```
+
+```
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.3;
 
 contract NestedMapping {
     // Nested mapping (mapping from address to another mapping)
