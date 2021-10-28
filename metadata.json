@@ -31,6 +31,46 @@
       "itShould": "Deploy Immutable to dummy blockchain",
       "command": "sh learn_tests/11.sh"
     },
+    {
+      "itShould": "Deploy SimpleStorage to dummy blockchain",
+      "command": "sh learn_tests/12.sh"
+    },
+    {
+      "itShould": "Deploy SimpleStorage, call get() and output zero num value",
+      "command": "sh learn_tests/13.sh"
+    },
+    {
+      "itShould": "Deploy SimpleStorage, call set(3) and set 3 as num value",
+      "command": "sh learn_tests/14.sh"
+    },
+    {
+      "itShould": "Deploy EtherUnits contract to dummy blockchain",
+      "command": "sh learn_tests/15.sh"
+    },
+    {
+      "itShould": "Deploy Gas contract to dummy blockchain",
+      "command": "sh learn_tests/16.sh"
+    },
+    {
+      "itShould": "Deploy Gas contract, call forever() and output a error saying Transaction ran out of gas",
+      "command": "sh learn_tests/17.sh"
+    },
+    {
+      "itShould": "Deploy IfElse contract to dummy blockchain",
+      "command": "sh learn_tests/18.sh"
+    },
+    {
+      "itShould": "Deploy IfElse contract, call foo(5), foo(11) and foo(30) printing 0,1,2 respectively",
+      "command": "sh learn_tests/19.sh"
+    },
+    {
+      "itShould": "Deploy IfElse contract, call ternary(5), ternary(11) printing 1,2 respectively",
+      "command": "sh learn_tests/20.sh"
+    },
+    {
+      "itShould": "Deploy Loop contract to dummy blockchain",
+      "command": "sh learn_tests/21.sh"
+    },
   ],
   "learnerAccessibleFileList": ["contracts/*"]
 }
