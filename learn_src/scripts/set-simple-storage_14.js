@@ -22,13 +22,20 @@ async function main() {
   console.log('SimpleStorage Contract deployed to:', contract.address);
   try {
     console.log(`Calling get() before set()...`);
-    let num = await contract.get();
-    console.log('get() output before set: ', num.toString());
+    let numBeforeSet = await contract.get();
+    console.log('get() output before set: ', numBeforeSet.toString());
     console.log(`\nCalling set(3)...`);
     await contract.set(3);
     console.log(`\nCalling get() after set(3)...`);
-    num = await contract.get();
-    console.log('get() output after set(3): ', num.toString());
+    let numAfterSet = await contract.get();
+    console.log('get() output after set(3): ', numAfterSet.toString());
+    if(numBeforeSet.toString() === '0' && numAfterSet.toString() === '3') {
+      console.log('Test passed');
+      process.exit(0);
+    } else {
+      console.log('Test failed');
+      process.exit(1);
+    }
   } catch (e) {
     console.error(e);
     process.exit(1);

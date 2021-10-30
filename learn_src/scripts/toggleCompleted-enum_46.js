@@ -15,25 +15,28 @@ async function main() {
   // await hre.run('compile');
 
   // We get the contract to deploy
-  const ContractFactory = await hre.ethers.getContractFactory('Counter');
+  const [deployer] = await ethers.getSigners();
+  const ContractFactory = await hre.ethers.getContractFactory('Todos');
   const contract = await ContractFactory.deploy();
 
   await contract.deployed();
-  console.log('Counter Contract deployed to:', contract.address);
+  console.log('Todos Contract deployed to:', contract.address);
   try {
-    console.log(`Calling get() before inc()...`);
-    let count = await contract.get();
-    console.log('get() output before inc: ', count.toString());
-    console.log(`\nCalling inc()...`);
-    await contract.inc();
-    console.log(`Calling get() after inc()...`);
-    count = await contract.get();
-    console.log('get() output after inc: ', count.toString());
-    if(count.toString() === '1') {
-      console.log('Test Passed!');
+    console.log('calling create(web3)');
+    await contract.create('web3');
+    console.log(`\nCalling get(0) after create(web3)...`);
+    let todoBefore = await contract.get(0);
+    console.log(`get(0) output: `, todoBefore);
+    console.log('\ncalling toggleCompleted(0)');
+    await contract.toggleCompleted(0);
+    console.log(`\nCalling get(0) after toggleCompleted(0)...`);
+    let todoAfter = await contract.get(0);
+    console.log(`get(0) output: `, todoAfter);
+    if(todoBefore.completed === false && todoAfter.completed === true) {
+      console.log('Test passed!');
       process.exit(0);
     } else {
-      console.log('Test Failed!');
+      console.log('Test failed!');
       process.exit(1);
     }
   } catch (e) {

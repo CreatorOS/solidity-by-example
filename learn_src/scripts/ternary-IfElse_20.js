@@ -22,11 +22,18 @@ async function main() {
   console.log('IfElse Contract deployed to:', contract.address);
   try {
     console.log(`Calling ternary(5)`);
-    let num = await contract.ternary(5);
-    console.log('ternary(5) output (input < 10): ', num.toString());
+    let numLessThan10 = await contract.ternary(5);
+    console.log('ternary(5) output (input < 10): ', numLessThan10.toString());
     console.log(`\nCalling ternary(11)`);
-    num = await contract.ternary(11);
-    console.log('ternary(11) output (input > 10): ', num.toString());
+    let numMoreThan10 = await contract.ternary(11);
+    console.log('ternary(11) output (input > 10): ', numMoreThan10.toString());
+    if(numLessThan10.toString() === '1' && numMoreThan10.toString() === '2') {
+      console.log('Test passed');
+      process.exit(0);
+    } else {
+      console.log('Test failed');
+      process.exit(1);
+    }
   } catch (e) {
     console.error(e);
     process.exit(1);

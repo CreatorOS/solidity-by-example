@@ -23,21 +23,28 @@ async function main() {
   console.log('Mapping Contract deployed to:', contract.address);
   try {
     console.log(`Calling get(${deployer.address}) before set(${deployer.address}, 3)...`);
-    let num = await contract.get(deployer.address);
-    console.log(`get(${deployer.address}) output before set: `, num.toString());
+    let numBeforeSet = await contract.get(deployer.address);
+    console.log(`get(${deployer.address}) output before set: `, numBeforeSet.toString());
 
     console.log(`\nCalling set(${deployer.address}, 3)...`);
     await contract.set(deployer.address, 3);
 
     console.log(`\nCalling get(${deployer.address}) after set(${deployer.address}, 3)...`);
-    num = await contract.get(deployer.address);
-    console.log(`get(${deployer.address}) output after set(${deployer.address}, 3): `, num.toString());
+    let numAfterSet = await contract.get(deployer.address);
+    console.log(`get(${deployer.address}) output after set(${deployer.address}, 3): `, numAfterSet.toString());
 
     console.log(`\nCalling remove(${deployer.address}) after set(${deployer.address}, 3)...`);
-    num = await contract.remove(deployer.address);
+    await contract.remove(deployer.address);
     console.log(`\nCalling get(${deployer.address}) after remove(${deployer.address})...`);
-    num = await contract.get(deployer.address);
-    console.log(`get(${deployer.address}) output after remove(${deployer.address}): `, num.toString());
+    let numAfterRemove = await contract.get(deployer.address);
+    console.log(`get(${deployer.address}) output after remove(${deployer.address}): `, numAfterRemove.toString());
+    if(numBeforeSet.toString() === '0' && numAfterSet.toString() === '3' && numAfterRemove.toString() === '0') {
+      console.log('Test passed!');
+      process.exit(0);
+    } else {
+      console.log('Test failed!');
+      process.exit(1);
+    }
   } catch (e) {
     console.error(e);
     process.exit(1);

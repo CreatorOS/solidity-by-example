@@ -24,6 +24,13 @@ async function main() {
   try {
     const count = await contract.get();
     console.log('get() output: ', count.toString());
+    if(count.toString() === '0') {
+      console.log('Test Passed!');
+      process.exit(0);
+    } else {
+      console.log('Test Failed!');
+      process.exit(1);
+    }
   } catch (e) {
     console.error(e);
     process.exit(1);

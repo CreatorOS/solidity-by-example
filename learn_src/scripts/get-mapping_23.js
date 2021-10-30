@@ -25,6 +25,13 @@ async function main() {
     console.log(`Calling get(${deployer.address})`);
     let num = await contract.get(deployer.address);
     console.log(`get(${deployer.address}) output(should get default value 0) :`, num.toString());
+    if(num.toString() === '0') {
+      console.log('Test Passed!');
+      process.exit(0);
+    } else {
+      console.log('Test Failed!');
+      process.exit(1);
+    }
   } catch (e) {
     console.error(e);
     process.exit(1);

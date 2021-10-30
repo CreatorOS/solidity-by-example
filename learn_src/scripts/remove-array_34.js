@@ -15,25 +15,27 @@ async function main() {
   // await hre.run('compile');
 
   // We get the contract to deploy
-  const ContractFactory = await hre.ethers.getContractFactory('Counter');
+  const [deployer] = await ethers.getSigners();
+  const ContractFactory = await hre.ethers.getContractFactory('Array');
   const contract = await ContractFactory.deploy();
 
   await contract.deployed();
-  console.log('Counter Contract deployed to:', contract.address);
+  console.log('Array Contract deployed to:', contract.address);
   try {
-    console.log(`Calling get() before inc()...`);
-    let count = await contract.get();
-    console.log('get() output before inc: ', count.toString());
-    console.log(`\nCalling inc()...`);
-    await contract.inc();
-    console.log(`Calling get() after inc()...`);
-    count = await contract.get();
-    console.log('get() output after inc: ', count.toString());
-    if(count.toString() === '1') {
-      console.log('Test Passed!');
+    console.log(`Calling push(4)`);
+    await contract.push(4);
+    console.log(`Calling get(0)`);
+    let numBefore = await contract.get(0);
+    console.log(`get(0) output (before remove(0)):`, numBefore.toString());
+    await contract.remove(0);
+    console.log(`Calling get(0)`);
+    let numAfter = await contract.get(0);
+    console.log(`get(0) output (after remove(0)):`, numAfter.toString());
+    if(numBefore.toString() === '4' && numAfter.toString() === '0') {
+      console.log('Test passed');
       process.exit(0);
     } else {
-      console.log('Test Failed!');
+      console.log('Test failed');
       process.exit(1);
     }
   } catch (e) {

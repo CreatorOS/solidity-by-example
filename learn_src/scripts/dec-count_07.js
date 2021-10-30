@@ -24,13 +24,20 @@ async function main() {
     console.log(`\nCalling inc()...`);
     await contract.inc();
     console.log(`Calling get() before dec()...`);
-    let count = await contract.get();
-    console.log('get() output before dec: ', count.toString());
+    let countBeforeDec = await contract.get();
+    console.log('get() output before dec: ', countBeforeDec.toString());
     console.log(`\nCalling dec()...`);
     await contract.dec();
     console.log(`Calling get() after dec()...`);
-    count = await contract.get();
-    console.log('get() output after dec: ', count.toString());
+    let countAfterDec = await contract.get();
+    console.log('get() output after dec: ', countAfterDec.toString());
+    if(countBeforeDec.toString() === '1' && countAfterDec.toString() === '0') {
+      console.log('test passed');
+      process.exit(0);
+    } else {
+      console.log('test failed');
+      process.exit(1);
+    }
   } catch (e) {
     console.error(e);
     process.exit(1);

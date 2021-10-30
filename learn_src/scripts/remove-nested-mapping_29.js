@@ -22,14 +22,27 @@ async function main() {
   await contract.deployed();
   console.log('NestedMapping Contract deployed to:', contract.address);
   try {
-    console.log(`Calling get(${deployer.address}, 1)`);
-    let num = await contract.get(deployer.address, 1);
-    console.log(`get(${deployer.address}, 1) output(should get default value false) :`, num.toString());
-    if(num.toString() === 'false') {
-      console.log('Test Passed!');
+    console.log(`Calling get(${deployer.address}, 1) before set(${deployer.address}, 1, true)...`);
+    let numBeforeSet = await contract.get(deployer.address, 1);
+    console.log(`get(${deployer.address}, 1) output before set: `, numBeforeSet.toString());
+
+    console.log(`\nCalling set(${deployer.address}, 1, true)...`);
+    await contract.set(deployer.address, 1, true);
+
+    console.log(`\nCalling get(${deployer.address}, 1) after set(${deployer.address}, 1, true)...`);
+    let numAfterSet = await contract.get(deployer.address, 1);
+    console.log(`get(${deployer.address}, 1) output after set(${deployer.address}, 1, true): `, numAfterSet.toString());
+
+    console.log(`\nCalling remove(${deployer.address}, 1) after set(${deployer.address}, 1, true)...`);
+    await contract.remove(deployer.address, 1);
+    console.log(`\nCalling get(${deployer.address}, 1) after remove(${deployer.address}, 1)...`);
+    let numAfterRemove = await contract.get(deployer.address, 1);
+    console.log(`get(${deployer.address}, 1) output after remove(${deployer.address}, 1): `, numAfterRemove.toString());
+    if(numBeforeSet.toString() === 'false' && numAfterSet.toString() === 'true' && numAfterRemove.toString() === 'false') {
+      console.log('Test passed!');
       process.exit(0);
     } else {
-      console.log('Test Failed!');
+      console.log('Test failed!');
       process.exit(1);
     }
   } catch (e) {

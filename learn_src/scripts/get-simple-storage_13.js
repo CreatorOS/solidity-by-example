@@ -23,7 +23,14 @@ async function main() {
   try {
     console.log(`Calling get()`);
     let num = await contract.get();
-    console.log('get() output', num.toString());
+    console.log('get() output: ', num.toString());
+    if(num.toString() === '0') {
+      console.log('Test Passed!');
+      process.exit(0);
+    } else {
+      console.log('Test Failed!');
+      process.exit(1);
+    }
   } catch (e) {
     console.error(e);
     process.exit(1);

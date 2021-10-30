@@ -15,25 +15,33 @@ async function main() {
   // await hre.run('compile');
 
   // We get the contract to deploy
-  const ContractFactory = await hre.ethers.getContractFactory('Counter');
+  const [deployer] = await ethers.getSigners();
+  const ContractFactory = await hre.ethers.getContractFactory('Array');
   const contract = await ContractFactory.deploy();
 
   await contract.deployed();
-  console.log('Counter Contract deployed to:', contract.address);
+  console.log('Array Contract deployed to:', contract.address);
   try {
-    console.log(`Calling get() before inc()...`);
-    let count = await contract.get();
-    console.log('get() output before inc: ', count.toString());
-    console.log(`\nCalling inc()...`);
-    await contract.inc();
-    console.log(`Calling get() after inc()...`);
-    count = await contract.get();
-    console.log('get() output after inc: ', count.toString());
-    if(count.toString() === '1') {
-      console.log('Test Passed!');
+    console.log(`Calling push(1)`);
+    await contract.push(1);
+    console.log(`Calling push(2)`);
+    await contract.push(2);
+    console.log(`Calling push(3)`);
+    await contract.push(3);
+    console.log(`Calling push(4)`);
+    await contract.push(4);
+    console.log(`Calling getArr()`);
+    let arrBefore = await contract.getArr();
+    console.log(`getArr(0) output (before removeCompact(1)):`, arrBefore.toString());
+    await contract.removeCompact(1);
+    console.log(`Calling getArr()`);
+    let arrAfter = await contract.getArr();
+    console.log(`getArr() output (after removeCompact(1)):`, arrAfter.toString());
+    if(arrBefore[1].toString() === '2' && arrAfter[1].toString() === '4' && arrAfter[3] === undefined) {
+      console.log('Test passed');
       process.exit(0);
     } else {
-      console.log('Test Failed!');
+      console.log('Test failed');
       process.exit(1);
     }
   } catch (e) {

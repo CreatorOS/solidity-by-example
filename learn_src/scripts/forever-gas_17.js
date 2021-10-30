@@ -25,8 +25,14 @@ async function main() {
     let response = await contract.forever();
     console.log('forever() output', response.toString());
   } catch (e) {
-    console.error(e.name + ' : ' + e.message);
-    process.exit(1);
+    if(e.code === -32003){
+      console.error(e.name + ' : ' + e.message + e.code);
+      process.exit(0)
+    }
+    else{
+      console.error(e.name + ' : ' + e.message + e.code);
+      process.exit(1);
+    }
   }
 }
 

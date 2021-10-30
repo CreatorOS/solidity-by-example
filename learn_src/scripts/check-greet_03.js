@@ -24,6 +24,13 @@ async function main() {
   try {
     const greet = await hw.greet();
     console.log('greet() output: ', greet);
+    if(greet === 'Hello World!') {
+      console.log('Test passed');
+      process.exit(0);
+    } else {
+      console.log('Test failed');
+      process.exit(1);
+    }
   } catch (e) {
     console.error(e);
     process.exit(1);
